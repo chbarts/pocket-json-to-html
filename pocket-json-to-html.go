@@ -98,7 +98,11 @@ func main() {
 
 	fmt.Println(dump.Status)
 	for _, v := range dump.List {
-		fmt.Fprintf(writer, "<a href=\"%s\">%s</a>\n", v.GivenURL, v.GivenTitle)
+		if len(v.GivenTitle) == 0 {
+			fmt.Fprintf(writer, "<a href=\"%s\">%s</a>\n", v.GivenURL, v.GivenURL)
+		} else {
+			fmt.Fprintf(writer, "<a href=\"%s\">%s</a>\n", v.GivenURL, v.GivenTitle)
+		}
 	}
 
         writer.Flush()
