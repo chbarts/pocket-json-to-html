@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"strconv"
         "bufio"
+	"sort"
+	"time"
 	"flag"
 	"fmt"
 	"log"
@@ -92,16 +95,26 @@ func main() {
 
 	var dump retrieveResponse
 	err = json.Unmarshal([]byte(input), &dump)
-	if err != nil {
-		log.Fatal(err)
+	check(err)
+
+	items := make(map[int64]PocketItem)
+	var keys []int64
+	for _, v := range dump.List {
+		stamp, errn := strconv.ParseInt(v.TimeAdded, 10, 64)
+		check(errn)
+		items[stamp] = v
+		keys = append(keys, stamp)
 	}
 
-	fmt.Println(dump.Status)
-	for _, v := range dump.List {
+	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
+
+	for _, key := range keys {
+		v := items[key]
+		when := time.Unix(key, 0)
 		if len(v.GivenTitle) == 0 {
-			fmt.Fprintf(writer, "<a href=\"%s\">%s</a>\n", v.GivenURL, v.GivenURL)
+			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>\n", when, v.GivenURL, v.GivenURL)
 		} else {
-			fmt.Fprintf(writer, "<a href=\"%s\">%s</a>\n", v.GivenURL, v.GivenTitle)
+			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>\n", when, v.GivenURL, v.GivenTitle)
 		}
 	}
 
