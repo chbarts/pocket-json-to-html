@@ -107,15 +107,22 @@ func main() {
 
 	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
 
+	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>Pocket Dump</title></head>\n")
+	fmt.Fprintf(writer, "<body><ol>\n")
 	for _, key := range keys {
 		v := items[key]
 		when := time.Unix(key, 0)
+		fmt.Fprintf(writer, "<li>")
 		if len(v.GivenTitle) == 0 {
-			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>\n", when, v.GivenURL, v.GivenURL)
+			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when, v.GivenURL, v.GivenURL)
 		} else {
-			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>\n", when, v.GivenURL, v.GivenTitle)
+			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when, v.GivenURL, v.GivenTitle)
 		}
+		
+		fmt.Fprintf(writer, "</li>\n")
 	}
+
+	fmt.Fprintf(writer, "</ol>\n</body></html>")
 
         writer.Flush()
 }
