@@ -9,7 +9,6 @@ import (
 	"time"
 	"flag"
 	"fmt"
-	"log"
         "os"
 )
 
