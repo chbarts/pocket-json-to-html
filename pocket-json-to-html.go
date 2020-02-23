@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"strconv"
+	"regexp"
         "bufio"
 	"sort"
 	"time"
@@ -42,6 +43,8 @@ var (
 	outf = flag.String("out", "/dev/stdout", "output file in HTML")
 	drange = flag.Bool("range", false, "print range of dates represented in the dump")
 	rev = flag.Bool("reverse", false, "sort reverse-chronologically (most recent first)")
+	upat = flag.String("url-regex", "", "print only bookmarks where URL matches regex")
+	tpat = flag.String("title-regex", "", "print only bookmarks where title matches regex")
 )
 
 type DomainMetadata struct {
@@ -117,6 +120,16 @@ func main() {
 		panic("range is nonsensical")
 	}
 
+	var ret *regexp.Regexp
+	if len(*tpat) > 0 {
+		ret = regexp.MustCompile(*tpat)
+	}
+
+	var reu *regexp.Regexp
+	if len(*upat) > 0 {
+		reu = regexp.MustCompile(*upat)
+	}
+
 	input, err := ioutil.ReadFile(*inf)
         check(err)
 
@@ -174,6 +187,19 @@ func main() {
 		}
 		
 		v := items[key]
+
+		if ret != nil {
+			if !ret.Match([]byte(v.GivenTitle)) {
+				continue
+			}
+		}
+
+		if reu != nil {
+			if !reu.Match([]byte(v.GivenURL)) {
+				continue
+			}
+		}
+
 		when := time.Unix(key, 0)
 		fmt.Fprintf(writer, "<li>")
 		if len(v.GivenTitle) == 0 {
