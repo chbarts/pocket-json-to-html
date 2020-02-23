@@ -12,9 +12,35 @@ import (
         "os"
 )
 
+type TimeValue struct {
+	Time *time.Time
+}
+
+func (t TimeValue) String() string {
+	if t.Time != nil {
+		return t.Time.String()
+	}
+
+	return ""
+}
+
+func (t TimeValue) Set(s string) error {
+	if tm, err := time.Parse(time.RFC3339, s); err != nil {
+		return err
+	} else {
+		*t.Time = tm
+	}
+
+	return nil
+}
+
+var tstart = &time.Time{}
+var tend = &time.Time{}
+
 var (
 	inf  = flag.String("in", "/dev/stdin", "input file in JSON")
 	outf = flag.String("out", "/dev/stdout", "output file in HTML")
+	drange = flag.Bool("range", false, "print range of dates represented in the dump")
 )
 
 type DomainMetadata struct {
@@ -82,7 +108,10 @@ func check(err error) {
 }
 
 func main() {
+	flag.Var(&TimeValue{tstart}, "start", "dump bookmarks from this date and after, RFC 3339 format (2006-01-02 15:04:05 -0700 MST) (Default is beginning of file)")
+	flag.Var(&TimeValue{tend}, "end", "dump bookmarks from this date and before, in RFC 3339 format (2006-01-02 15:04:05 -0700 MST) (Default is end of file)")
 	flag.Parse()
+
 	input, err := ioutil.ReadFile(*inf)
         check(err)
 
@@ -107,9 +136,34 @@ func main() {
 
 	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
 
+	if *drange {
+		fmt.Fprintf(writer, "%s - %s\n", time.Unix(keys[0], 0), time.Unix(keys[len(keys) - 1], 0))
+		writer.Flush()
+		output.Close()
+		return
+	}
+
+	st := time.Unix(keys[0], 0)
+	if *tstart {
+		st = time.Unix(*tstart, 0)
+	}
+
+	et := time.Unix(keys[len(keys) - 1], 0)
+	if *tend {
+		et = time.Unix(*tend, 0)
+	}
+
 	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>Pocket Dump</title></head>\n")
 	fmt.Fprintf(writer, "<body><ol>\n")
 	for _, key := range keys {
+		if key < st {
+			continue
+		}
+
+		if key > et {
+			continue
+		}
+		
 		v := items[key]
 		when := time.Unix(key, 0)
 		fmt.Fprintf(writer, "<li>")
