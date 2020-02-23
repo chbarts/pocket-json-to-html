@@ -112,7 +112,7 @@ func main() {
 	flag.Var(&TimeValue{tend}, "end", "dump bookmarks from this date and before, in RFC 3339 format (2017-11-01T00:00:00-07:00) (Default is end of file)")
 	flag.Parse()
 
-	if tend.Before(tstart) {
+	if tend.Before(*tstart) {
 		panic("range is nonsensical")
 	}
 
