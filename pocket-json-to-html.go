@@ -144,12 +144,12 @@ func main() {
 	}
 
 	st := keys[0]
-	if *tstart {
+	if *tstart != time.Unix(0, 0) {
 		st = time.Unix(*tstart, 0)
 	}
 
 	et := keys[len(keys) - 1]
-	if *tend {
+	if *tend != time.Unix(0, 0) {
 		et = time.Unix(*tend, 0)
 	}
 
