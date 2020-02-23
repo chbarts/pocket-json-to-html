@@ -144,13 +144,13 @@ func main() {
 	}
 
 	st := keys[0]
-	if tstart.Time != time.Unix(0, 0) {
-		st = time.Unix(tstart.Time, 0)
+	if *tstart != time.Unix(0, 0) {
+		st = tstart.Unix()
 	}
 
 	et := keys[len(keys) - 1]
-	if tend.Time != time.Unix(0, 0) {
-		et = time.Unix(tend.Time, 0)
+	if *tend != time.Unix(0, 0) {
+		et = tend.Unix()
 	}
 
 	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>Pocket Dump</title></head>\n")
