@@ -108,8 +108,8 @@ func check(err error) {
 }
 
 func main() {
-	flag.Var(&TimeValue{tstart}, "start", "dump bookmarks from this date and after, RFC 3339 format (2006-01-02 15:04:05 -0700 MST) (Default is beginning of file)")
-	flag.Var(&TimeValue{tend}, "end", "dump bookmarks from this date and before, in RFC 3339 format (2006-01-02 15:04:05 -0700 MST) (Default is end of file)")
+	flag.Var(&TimeValue{tstart}, "start", "dump bookmarks from this date and after, RFC 3339 format (2017-11-01T00:00:00-07:00) (Default is beginning of file)")
+	flag.Var(&TimeValue{tend}, "end", "dump bookmarks from this date and before, in RFC 3339 format (2017-11-01T00:00:00-07:00) (Default is end of file)")
 	flag.Parse()
 
 	input, err := ioutil.ReadFile(*inf)
@@ -144,12 +144,12 @@ func main() {
 	}
 
 	st := keys[0]
-	if *tstart != time.Unix(0, 0) {
+	if !tstart.isZero() {
 		st = tstart.Unix()
 	}
 
 	et := keys[len(keys) - 1]
-	if *tend != time.Unix(0, 0) {
+	if !tend.isZero() {
 		et = tend.Unix()
 	}
 
