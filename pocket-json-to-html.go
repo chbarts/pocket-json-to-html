@@ -170,7 +170,7 @@ func main() {
 		}
 
 		if key > et {
-			break
+			continue
 		}
 		
 		v := items[key]
