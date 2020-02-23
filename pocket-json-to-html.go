@@ -41,6 +41,7 @@ var (
 	inf  = flag.String("in", "/dev/stdin", "input file in JSON")
 	outf = flag.String("out", "/dev/stdout", "output file in HTML")
 	drange = flag.Bool("range", false, "print range of dates represented in the dump")
+	rev = flag.Bool("reverse", false, "sort reverse-chronologically (most recent first)")
 )
 
 type DomainMetadata struct {
@@ -138,7 +139,11 @@ func main() {
 		keys = append(keys, stamp)
 	}
 
-	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
+	if *rev {
+		sort.Slice(keys, func(i, j int) bool { return keys[i] > keys[j] })
+	} else {
+		sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
+	}
 
 	if *drange {
 		fmt.Fprintf(writer, "%s - %s\n", time.Unix(keys[0], 0), time.Unix(keys[len(keys) - 1], 0))
