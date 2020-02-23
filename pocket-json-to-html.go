@@ -144,12 +144,12 @@ func main() {
 	}
 
 	st := keys[0]
-	if !tstart.isZero() {
+	if !tstart.IsZero() {
 		st = tstart.Unix()
 	}
 
 	et := keys[len(keys) - 1]
-	if !tend.isZero() {
+	if !tend.IsZero() {
 		et = tend.Unix()
 	}
 
