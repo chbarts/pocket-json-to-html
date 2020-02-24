@@ -114,6 +114,7 @@ func check(err error) {
 }
 
 func main() {
+	*tend = time.Now()
 	flag.Var(&TimeValue{tstart}, "start", "dump bookmarks from this date and after, RFC 3339 format (2017-11-01T00:00:00-07:00) (Default is beginning of file)")
 	flag.Var(&TimeValue{tend}, "end", "dump bookmarks from this date and before, in RFC 3339 format (2017-11-01T00:00:00-07:00) (Default is end of file)")
 	flag.Parse()
