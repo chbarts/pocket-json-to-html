@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"html"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -218,7 +219,7 @@ func main() {
 		if len(v.GivenTitle) == 0 {
 			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when.Format(time.UnixDate), v.GivenURL, v.GivenURL)
 		} else {
-			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when.Format(time.UnixDate), v.GivenURL, v.GivenTitle)
+			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when.Format(time.UnixDate), v.GivenURL, html.EscapeString(v.GivenTitle))
 		}
 
 		fmt.Fprintf(writer, "</li>\n")
