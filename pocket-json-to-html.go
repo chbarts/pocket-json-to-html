@@ -1,16 +1,16 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
-	"io/ioutil"
-	"strconv"
-	"regexp"
-        "bufio"
-	"sort"
-	"time"
 	"flag"
 	"fmt"
-        "os"
+	"io/ioutil"
+	"os"
+	"regexp"
+	"sort"
+	"strconv"
+	"time"
 )
 
 type TimeValue struct {
@@ -39,13 +39,13 @@ var tstart = &time.Time{}
 var tend = &time.Time{}
 
 var (
-	inf  = flag.String("in", "/dev/stdin", "input file in JSON")
-	outf = flag.String("out", "/dev/stdout", "output file in HTML")
+	inf    = flag.String("in", "/dev/stdin", "input file in JSON")
+	outf   = flag.String("out", "/dev/stdout", "output file in HTML")
 	drange = flag.Bool("range", false, "print range of dates represented in the dump")
-	rev = flag.Bool("reverse", false, "sort reverse-chronologically (most recent first)")
-	upat = flag.String("url-regex", "", "print only bookmarks where URL matches regex")
-	tpat = flag.String("title-regex", "", "print only bookmarks where title matches regex")
-	max = flag.Int("max", -1, "maximum number of bookmarks printed, -1 for unlimited")
+	rev    = flag.Bool("reverse", false, "sort reverse-chronologically (most recent first)")
+	upat   = flag.String("url-regex", "", "print only bookmarks where URL matches regex")
+	tpat   = flag.String("title-regex", "", "print only bookmarks where title matches regex")
+	max    = flag.Int("max", -1, "maximum number of bookmarks printed, -1 for unlimited")
 )
 
 type DomainMetadata struct {
@@ -107,9 +107,9 @@ type retrieveResponse struct {
 }
 
 func check(err error) {
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 }
 
 func main() {
@@ -124,7 +124,7 @@ func main() {
 	if (*max == 0) || (*max < -1) {
 		panic("maximum is nonsensical")
 	}
-	
+
 	var ret *regexp.Regexp
 	if len(*tpat) > 0 {
 		ret = regexp.MustCompile(*tpat)
@@ -136,13 +136,13 @@ func main() {
 	}
 
 	input, err := ioutil.ReadFile(*inf)
-        check(err)
+	check(err)
 
-        output, erro := os.Create(*outf)
-        check(erro)
-        defer output.Close()
+	output, erro := os.Create(*outf)
+	check(erro)
+	defer output.Close()
 
-        writer := bufio.NewWriter(output)
+	writer := bufio.NewWriter(output)
 
 	var dump retrieveResponse
 	err = json.Unmarshal([]byte(input), &dump)
@@ -164,7 +164,7 @@ func main() {
 	}
 
 	if *drange {
-		fmt.Fprintf(writer, "%s - %s\n", time.Unix(keys[0], 0), time.Unix(keys[len(keys) - 1], 0))
+		fmt.Fprintf(writer, "%s - %s\n", time.Unix(keys[0], 0), time.Unix(keys[len(keys)-1], 0))
 		writer.Flush()
 		output.Close()
 		return
@@ -175,7 +175,7 @@ func main() {
 		st = tstart.Unix()
 	}
 
-	et := keys[len(keys) - 1]
+	et := keys[len(keys)-1]
 	if !tend.IsZero() {
 		et = tend.Unix()
 	}
@@ -190,7 +190,7 @@ func main() {
 		if key > et {
 			continue
 		}
-		
+
 		v := items[key]
 
 		if ret != nil {
@@ -220,11 +220,11 @@ func main() {
 		} else {
 			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when, v.GivenURL, v.GivenTitle)
 		}
-		
+
 		fmt.Fprintf(writer, "</li>\n")
 	}
 
 	fmt.Fprintf(writer, "</ol>\n</body></html>")
 
-        writer.Flush()
+	writer.Flush()
 }
