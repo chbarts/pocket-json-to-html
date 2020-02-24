@@ -121,6 +121,10 @@ func main() {
 		panic("range is nonsensical")
 	}
 
+	if (*max == 0) || (*max < -1) {
+		panic("maximum is nonsensical")
+	}
+	
 	var ret *regexp.Regexp
 	if len(*tpat) > 0 {
 		ret = regexp.MustCompile(*tpat)
