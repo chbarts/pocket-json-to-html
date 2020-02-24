@@ -45,6 +45,7 @@ var (
 	rev = flag.Bool("reverse", false, "sort reverse-chronologically (most recent first)")
 	upat = flag.String("url-regex", "", "print only bookmarks where URL matches regex")
 	tpat = flag.String("title-regex", "", "print only bookmarks where title matches regex")
+	max = flag.Int("max", -1, "maximum number of bookmarks printed, -1 for unlimited")
 )
 
 type DomainMetadata struct {
@@ -197,6 +198,14 @@ func main() {
 		if reu != nil {
 			if !reu.Match([]byte(v.GivenURL)) {
 				continue
+			}
+		}
+
+		if *max != -1 {
+			if *max > 0 {
+				*max--
+			} else {
+				break
 			}
 		}
 
