@@ -216,9 +216,9 @@ func main() {
 		when := time.Unix(key, 0)
 		fmt.Fprintf(writer, "<li>")
 		if len(v.GivenTitle) == 0 {
-			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when, v.GivenURL, v.GivenURL)
+			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when.Format(time.UnixDate), v.GivenURL, v.GivenURL)
 		} else {
-			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when, v.GivenURL, v.GivenTitle)
+			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when.Format(time.UnixDate), v.GivenURL, v.GivenTitle)
 		}
 
 		fmt.Fprintf(writer, "</li>\n")
