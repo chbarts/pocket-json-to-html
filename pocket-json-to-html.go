@@ -178,7 +178,7 @@ func main() {
 	}
 
 	et := keys[len(keys)-1]
-	if !tend.IsZero() {
+	if tend.Before(et) {
 		et = tend.Unix()
 	}
 
