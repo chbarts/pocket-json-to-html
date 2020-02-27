@@ -216,14 +216,16 @@ func main() {
 		}
 
 		when := time.Unix(key, 0)
-		fmt.Fprintf(writer, "<li>")
-		if len(v.GivenTitle) == 0 {
-			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when.Format(time.UnixDate), v.GivenURL, v.GivenURL)
+		var title string
+		if (len(v.GivenTitle) == 0) && (len(v.ResolvedTitle) == 0) {
+			title = v.GivenURL
+		} else if len(v.GivenTitle) == 0 {
+			title = v.ResolvedTitle
 		} else {
-			fmt.Fprintf(writer, "%s <a href=\"%s\">%s</a>", when.Format(time.UnixDate), v.GivenURL, html.EscapeString(v.GivenTitle))
+			title = v.GivenTitle
 		}
 
-		fmt.Fprintf(writer, "</li>\n")
+		fmt.Fprintf(writer, "<li>%s <a href=\"%s\">%s</a></li>\n", when.Format(time.UnixDate), v.GivenURL, html.EscapeString(title))
 	}
 
 	fmt.Fprintf(writer, "</ol>\n</body></html>")
