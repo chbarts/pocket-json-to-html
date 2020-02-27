@@ -195,12 +195,6 @@ func main() {
 
 		v := items[key]
 
-		if ret != nil {
-			if !ret.Match([]byte(v.GivenTitle)) {
-				continue
-			}
-		}
-
 		if reu != nil {
 			if !reu.Match([]byte(v.GivenURL)) {
 				continue
@@ -223,6 +217,12 @@ func main() {
 			title = v.ResolvedTitle
 		} else {
 			title = v.GivenTitle
+		}
+
+		if ret != nil {
+			if !ret.Match([]byte(title)) {
+				continue
+			}
 		}
 
 		fmt.Fprintf(writer, "<li>%s <a href=\"%s\">%s</a></li>\n", when.Format(time.UnixDate), v.GivenURL, html.EscapeString(title))
