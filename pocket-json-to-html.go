@@ -26,10 +26,33 @@ func (t TimeValue) String() string {
 	return ""
 }
 
+// ^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$
+
+func MakeTimeStr(str string) string {
+	reh := regexp.MustCompile(`.+[tT](\d\d)`)
+	rem := regexp.MustCompile(`.+[tT](\d\d):(\d\d)`)
+	ret := regexp.MustCompile(`.+[tT](\d\d):(\d\d):(\d\d)`)
+	rez := regexp.MustCompile(`.+([zZ]|([+\-](\d\d):(\d\d)))`)
+	tnow := time.Now()
+	_, off := tnow.Zone()
+	offs := strconv.Itoa(off)
+	if rez.MatchString(str) {
+		return str
+	} else if ret.MatchString(str) {
+		return str + offs
+	} else if rem.MatchString(str) {
+		return str + ":00" + offs
+	} else if reh.MatchString(str) {
+		return str + ":00:00" + offs
+	} else {
+		return str + "T00:00:00" + offs
+	}
+}
+
 func (t TimeValue) Set(str string) error {
-	if loc, err := time.LoadLocation("Local"); err != nil {
-		return err
-	} else if tm, err := time.ParseInLocation(time.RFC3339, str, loc); err != nil {
+	tstr := MakeTimeStr(str)
+
+	if tm, err := time.Parse(time.RFC3339, tstr); err != nil {
 		return err
 	} else {
 		*t.Time = tm
@@ -117,8 +140,8 @@ func check(err error) {
 
 func main() {
 	*tend = time.Now()
-	flag.Var(&TimeValue{tstart}, "start", "dump bookmarks from this date and after, RFC 3339 format with optional zone, default to local time (2017-11-01T00:00:00[-07:00]) (Default is beginning of file)")
-	flag.Var(&TimeValue{tend}, "end", "dump bookmarks from this date and before, in RFC 3339 format with optional zone, default to local time (2017-11-01T00:00:00[-07:00]) (Default is end of file)")
+	flag.Var(&TimeValue{tstart}, "start", "dump bookmarks from this date and after, RFC 3339 format with optional time and time zone, default to local time (2017-11-01[T00:00:00[-07:00]]) (Default is beginning of file)")
+	flag.Var(&TimeValue{tend}, "end", "dump bookmarks from this date and before, in RFC 3339 format with optional time and time zone, default to local time (2017-11-01[T00:00:00[-07:00]]) (Default is end of file)")
 	flag.Parse()
 
 	if tend.Before(*tstart) {
