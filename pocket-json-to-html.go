@@ -26,44 +26,39 @@ func (t TimeValue) String() string {
 	return ""
 }
 
-// ^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$
-
-func OffToStr(off int) string {
-	if off < 0 {
-		poff := -off
-		return fmt.Sprintf("-%02d:%02d", poff/3600, (poff/60)%60)
-	} else if off > 0 {
-		return fmt.Sprintf("+%02d:%02d", off/3600, (off/60)%60)
-	} else {
-		return "Z"
-	}
-}
-
-func MakeTimeStr(str string) string {
+func MakeTime(str string) (Time, error) {
 	reh := regexp.MustCompile(`.+[tT](\d\d)`)
 	rem := regexp.MustCompile(`.+[tT](\d\d):(\d\d)`)
 	ret := regexp.MustCompile(`.+[tT](\d\d):(\d\d):(\d\d)`)
 	rez := regexp.MustCompile(`.+([zZ]|([+\-](\d\d):(\d\d)))`)
 	tnow := time.Now()
-	_, off := tnow.Zone()
-	offs := OffToStr(off)
+	location := tnow.Location()
+	strs := ""
 	if rez.MatchString(str) {
-		return str
+		if tm, err := time.Parse(time.RFC3339, str); err != nil {
+			return (nil, err)
+		}
+
+		return (tm, nil)
 	} else if ret.MatchString(str) {
-		return str + offs
+		strs = str
 	} else if rem.MatchString(str) {
-		return str + ":00" + offs
+		strs = str + ":00"
 	} else if reh.MatchString(str) {
-		return str + ":00:00" + offs
+		strs = str + ":00:00"
 	} else {
-		return str + "T00:00:00" + offs
+		strs = str + "T00:00:00"
 	}
+
+	if tm, err := time.ParseInLocation(time.RFC3339, strs, location); err != nil {
+		return (nil, err)
+	}
+
+	return (tm, nil)
 }
 
 func (t TimeValue) Set(str string) error {
-	tstr := MakeTimeStr(str)
-
-	if tm, err := time.Parse(time.RFC3339, tstr); err != nil {
+	if tm, err := MakeTime(str); err != nil {
 		return err
 	} else {
 		*t.Time = tm
