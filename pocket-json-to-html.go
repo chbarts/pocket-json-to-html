@@ -26,8 +26,10 @@ func (t TimeValue) String() string {
 	return ""
 }
 
-func (t TimeValue) Set(s string) error {
-	if tm, err := time.Parse(time.RFC3339, s); err != nil {
+func (t TimeValue) Set(str string) error {
+	if loc, err := time.LoadLocation("Local"); err != nil {
+		return err
+	} else if tm, err := time.ParseInLocation(time.RFC3339, str, loc); err != nil {
 		return err
 	} else {
 		*t.Time = tm
