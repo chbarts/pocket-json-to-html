@@ -26,7 +26,7 @@ func (t TimeValue) String() string {
 	return ""
 }
 
-func MakeTime(str string) (Time, error) {
+func MakeTime(str string) (time.Time, error) {
 	reh := regexp.MustCompile(`.+[tT](\d\d)`)
 	rem := regexp.MustCompile(`.+[tT](\d\d):(\d\d)`)
 	ret := regexp.MustCompile(`.+[tT](\d\d):(\d\d):(\d\d)`)
@@ -37,9 +37,10 @@ func MakeTime(str string) (Time, error) {
 	if rez.MatchString(str) {
 		if tm, err := time.Parse(time.RFC3339, str); err != nil {
 			return nil, err
+		} else {
+			return tm, nil
 		}
-
-		return tm, nil
+		
 	} else if ret.MatchString(str) {
 		strs = str
 	} else if rem.MatchString(str) {
@@ -52,9 +53,9 @@ func MakeTime(str string) (Time, error) {
 
 	if tm, err := time.ParseInLocation(time.RFC3339, strs, location); err != nil {
 		return nil, err
+	} else {
+		return tm, nil
 	}
-
-	return tm, nil
 }
 
 func (t TimeValue) Set(str string) error {
