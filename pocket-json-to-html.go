@@ -36,10 +36,10 @@ func MakeTime(str string) (Time, error) {
 	strs := ""
 	if rez.MatchString(str) {
 		if tm, err := time.Parse(time.RFC3339, str); err != nil {
-			return (nil, err)
+			return nil, err
 		}
 
-		return (tm, nil)
+		return tm, nil
 	} else if ret.MatchString(str) {
 		strs = str
 	} else if rem.MatchString(str) {
@@ -51,10 +51,10 @@ func MakeTime(str string) (Time, error) {
 	}
 
 	if tm, err := time.ParseInLocation(time.RFC3339, strs, location); err != nil {
-		return (nil, err)
+		return nil, err
 	}
 
-	return (tm, nil)
+	return tm, nil
 }
 
 func (t TimeValue) Set(str string) error {
