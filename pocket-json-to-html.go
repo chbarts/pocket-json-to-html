@@ -29,13 +29,13 @@ func (t TimeValue) String() string {
 // ^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$
 
 func OffToStr(off int) string {
-	if off == 0 {
-		return "+00:00"
+	if off < 0 {
+		poff := -off
+		return fmt.Sprintf("-%02d:%02d", poff/3600, (poff/60)%60)
 	} else if off > 0 {
-		return fmt.Sprintf("+%02d:%02d", off%3600, (off/60)%60)
+		return fmt.Sprintf("+%02d:%02d", off/3600, (off/60)%60)
 	} else {
-		off = -off
-		return fmt.Sprintf("-%02d:%02d", off%3600, (off/60)%60)
+		return "Z"
 	}
 }
 
