@@ -28,6 +28,16 @@ func (t TimeValue) String() string {
 
 // ^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$
 
+func OffToStr(off int) string {
+	if off == 0 {
+		return "+00:00"
+	} else if off > 0 {
+		return ("+" + (off % 3600) + ":" + ((off / 60) % 60))
+	} else {
+		return ("-" + (off % 3600) + ":" + ((off / 60) % 60))
+	}
+}
+
 func MakeTimeStr(str string) string {
 	reh := regexp.MustCompile(`.+[tT](\d\d)`)
 	rem := regexp.MustCompile(`.+[tT](\d\d):(\d\d)`)
@@ -35,7 +45,7 @@ func MakeTimeStr(str string) string {
 	rez := regexp.MustCompile(`.+([zZ]|([+\-](\d\d):(\d\d)))`)
 	tnow := time.Now()
 	_, off := tnow.Zone()
-	offs := strconv.Itoa(off)
+	offs := OffToStr(off)
 	if rez.MatchString(str) {
 		return str
 	} else if ret.MatchString(str) {
