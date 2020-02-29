@@ -32,9 +32,10 @@ func OffToStr(off int) string {
 	if off == 0 {
 		return "+00:00"
 	} else if off > 0 {
-		return fmt.Sprintf("+%d:%02d", off%3600, (off/60)%60)
+		return fmt.Sprintf("+%02d:%02d", off%3600, (off/60)%60)
 	} else {
-		return fmt.Sprintf("-%d:%02d", off%3600, (off/60)%60)
+		off = -off
+		return fmt.Sprintf("-%02d:%02d", off%3600, (off/60)%60)
 	}
 }
 
