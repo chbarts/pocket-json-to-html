@@ -27,7 +27,7 @@ func (t TimeValue) String() string {
 }
 
 func MakeTime(str string) (time.Time, error) {
-	const fmt := "2006-01-02T15:04:05"
+	const fmt = "2006-01-02T15:04:05"
 	reh := regexp.MustCompile(`.+[tT](\d\d)`)
 	rem := regexp.MustCompile(`.+[tT](\d\d):(\d\d)`)
 	ret := regexp.MustCompile(`.+[tT](\d\d):(\d\d):(\d\d)`)
