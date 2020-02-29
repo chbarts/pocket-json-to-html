@@ -27,6 +27,7 @@ func (t TimeValue) String() string {
 }
 
 func MakeTime(str string) (time.Time, error) {
+	const fmt := "2006-01-02T15:04:05"
 	reh := regexp.MustCompile(`.+[tT](\d\d)`)
 	rem := regexp.MustCompile(`.+[tT](\d\d):(\d\d)`)
 	ret := regexp.MustCompile(`.+[tT](\d\d):(\d\d):(\d\d)`)
@@ -51,7 +52,7 @@ func MakeTime(str string) (time.Time, error) {
 		strs = str + "T00:00:00"
 	}
 
-	if tm, err := time.ParseInLocation(time.RFC3339, strs, location); err != nil {
+	if tm, err := time.ParseInLocation(fmt, strs, location); err != nil {
 		return tnow, err
 	} else {
 		return tm, nil
