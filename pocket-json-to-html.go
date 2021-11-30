@@ -80,6 +80,7 @@ var (
 	upat   = flag.String("url-regex", "", "print only bookmarks where URL matches regex")
 	tpat   = flag.String("title-regex", "", "print only bookmarks where title matches regex")
 	max    = flag.Int("max", -1, "maximum number of bookmarks printed, -1 for unlimited")
+	title  = flag.String("title", "Pocket Dump", "HTML title attribute of output file")
 )
 
 type DomainMetadata struct {
@@ -226,7 +227,7 @@ func main() {
 		return
 	}
 
-	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>Pocket Dump</title></head>\n")
+	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>%s</title></head>\n", *title)
 	fmt.Fprintf(writer, "<body><ol>\n")
 	for _, key := range keys {
 		if key < st {
