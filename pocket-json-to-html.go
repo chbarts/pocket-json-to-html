@@ -192,10 +192,31 @@ func main() {
 		keys = append(keys, stamp)
 	}
 
+	var st int64
+	var et int64
 	if *rev {
 		sort.Slice(keys, func(i, j int) bool { return keys[i] > keys[j] })
+		st = keys[len(keys)-1]
+		if !tstart.IsZero() {
+			st = tstart.Unix()
+		}
+
+		et = keys[0]
+		if tend.Before(time.Unix(et, 0)) {
+			et = tend.Unix()
+		}
+
 	} else {
 		sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
+		st = keys[0]
+		if !tstart.IsZero() {
+			st = tstart.Unix()
+		}
+
+		et = keys[len(keys)-1]
+		if tend.Before(time.Unix(et, 0)) {
+			et = tend.Unix()
+		}
 	}
 
 	if *drange {
@@ -203,16 +224,6 @@ func main() {
 		writer.Flush()
 		output.Close()
 		return
-	}
-
-	st := keys[0]
-	if !tstart.IsZero() {
-		st = tstart.Unix()
-	}
-
-	et := keys[len(keys)-1]
-	if tend.Before(time.Unix(et, 0)) {
-		et = tend.Unix()
 	}
 
 	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>Pocket Dump</title></head>\n")
