@@ -227,7 +227,7 @@ func main() {
 		return
 	}
 
-	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>%s</title></head>\n", *title)
+	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>%s</title></head>\n", html.EscapeString(*title))
 	fmt.Fprintf(writer, "<body><ol>\n")
 	for _, key := range keys {
 		if key < st {
