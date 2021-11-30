@@ -220,15 +220,12 @@ func main() {
 		}
 	}
 
+	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>%s</title></head><body>\n", html.EscapeString(*title))
 	if *drange {
-		fmt.Fprintf(writer, "%s - %s\n", time.Unix(keys[0], 0), time.Unix(keys[len(keys)-1], 0))
-		writer.Flush()
-		output.Close()
-		return
+		fmt.Fprintf(writer, "<h1>%s - %s</h1>\n", time.Unix(keys[0], 0), time.Unix(keys[len(keys)-1], 0))
 	}
 
-	fmt.Fprintf(writer, "<!DOCTYPE html><html>\n<head><meta charset=\"utf-8\"><title>%s</title></head>\n", html.EscapeString(*title))
-	fmt.Fprintf(writer, "<body><ol>\n")
+	fmt.Fprintf(writer, "<ol>\n")
 	for _, key := range keys {
 		if key < st {
 			continue
