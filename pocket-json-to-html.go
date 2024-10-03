@@ -137,8 +137,12 @@ type PocketItem struct {
 }
 
 type retrieveResponse struct {
-	Status int                   `json:"status"`
-	List   map[string]PocketItem `json:"list"`
+	Status     int                   `json:"status"`
+	List       map[string]PocketItem `json:"list"`
+	Since      int64                 `json:"since"`
+	Complete   int                   `json:"complete"`
+	SearchMeta map[string]string     `json:"search_meta"`
+	Error      map[string]string     `json:"error"`
 }
 
 func check(err error) {
