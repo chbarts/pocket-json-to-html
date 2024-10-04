@@ -191,6 +191,10 @@ func main() {
 	items := make(map[int64]PocketItem)
 	var keys []int64
 	for _, v := range dump.List {
+		if (v.Status != "0") {
+			continue
+		}
+
 		stamp, errn := strconv.ParseInt(v.TimeAdded, 10, 64)
 		check(errn)
 		items[stamp] = v
