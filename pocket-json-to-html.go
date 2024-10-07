@@ -111,29 +111,29 @@ type Video struct {
 }
 
 type PocketItem struct {
-	ItemID         string           `json:"item_id"`
-	ResolvedID     string           `json:"resolved_id"`
-	GivenURL       string           `json:"given_url"`
-	GivenTitle     string           `json:"given_title"`
-	Favorite       string           `json:"favorite"`
+	ItemID         string           `json:"item_id,omitempty"`
+	ResolvedID     string           `json:"resolved_id,omitempty"`
+	GivenURL       string           `json:"given_url,omitempty"`
+	GivenTitle     string           `json:"given_title,omitempty"`
+	Favorite       string           `json:"favorite,omitempty"`
 	Status         string           `json:"status"`
-	ResolvedTitle  string           `json:"resolved_title"`
-	ResolvedURL    string           `json:"resolved_url"`
-	Excerpt        string           `json:"excerpt"`
-	IsArticle      string           `json:"is_article"`
-	HasVideo       string           `json:"has_video"`
-	HasImage       string           `json:"has_image"`
-	WordCount      string           `json:"word_count"`
-	Images         map[string]Image `json:"images"`
-	Videos         map[string]Video `json:"videos"`
-	TimeAdded      string           `json:"time_added"`
-	TimeRead       string           `json:"time_read"`
-	TimeFavorited  string           `json:"time_favorited"`
-	DomainMeta     DomainMetadata   `json:"domain_metadata"`
-	SortId         int              `json:"sort_id"`
-	Lang           string           `json:"lang"`
-	IsIndex        string           `json:"is_index"`
-	ListenEstimate int              `json:"listen_duration_estimate"`
+	ResolvedTitle  string           `json:"resolved_title,omitempty"`
+	ResolvedURL    string           `json:"resolved_url,omitempty"`
+	Excerpt        string           `json:"excerpt,omitempty"`
+	IsArticle      string           `json:"is_article,omitempty"`
+	HasVideo       string           `json:"has_video,omitempty"`
+	HasImage       string           `json:"has_image,omitempty"`
+	WordCount      string           `json:"word_count,omitempty"`
+	Images         map[string]Image `json:"images,omitempty"`
+	Videos         map[string]Video `json:"videos,omitempty"`
+	TimeAdded      string           `json:"time_added,omitempty"`
+	TimeRead       string           `json:"time_read,omitempty"`
+	TimeFavorited  string           `json:"time_favorited,omitempty"`
+	DomainMeta     DomainMetadata   `json:"domain_metadata,omitempty"`
+	SortId         *int             `json:"sort_id,omitempty"`
+	Lang           string           `json:"lang,omitempty"`
+	IsIndex        string           `json:"is_index,omitempty"`
+	ListenEstimate *int             `json:"listen_duration_estimate,omitempty"`
 }
 
 type retrieveResponse struct {
