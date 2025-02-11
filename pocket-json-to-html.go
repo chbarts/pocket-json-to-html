@@ -116,7 +116,7 @@ type PocketItem struct {
 	GivenURL       string           `json:"given_url,omitempty"`
 	GivenTitle     string           `json:"given_title,omitempty"`
 	Favorite       string           `json:"favorite,omitempty"`
-	Status         string           `json:"status"`
+	Status         string           `json:"status",omitempty`
 	ResolvedTitle  string           `json:"resolved_title,omitempty"`
 	ResolvedURL    string           `json:"resolved_url,omitempty"`
 	Excerpt        string           `json:"excerpt,omitempty"`
