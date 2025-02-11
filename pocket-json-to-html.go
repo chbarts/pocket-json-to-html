@@ -3,9 +3,11 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"html"
+	"io"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -151,6 +153,29 @@ func check(err error) {
 	}
 }
 
+func checkJSON(err error) {
+	if err != nil {
+		var syntaxError *json.SyntaxError
+		var unmarshalTypeError *json.UnmarshalTypeError
+
+		switch {
+		case errors.As(err, &syntaxError):
+			msg := fmt.Sprintf("Badly-formed JSON: Error at position %d", syntaxError.Offset)
+			panic(msg)
+		case errors.Is(err, io.ErrUnexpectedEOF):
+			msg := fmt.Sprintf("Badly-formed JSON: Unexpected EOF")
+			panic(msg)
+		case errors.As(err, &unmarshalTypeError):
+			msg := fmt.Sprintf("JSON contains an invalid value for the %q field at position %d", unmarshalTypeError.Field, unmarshalTypeError.Offset)
+			panic(msg)
+		case errors.Is(err, io.EOF):
+			panic("JSON file cannot be empty")
+		default:
+			panic(err)
+		}
+	}
+}
+
 func main() {
 	*tend = time.Now()
 	flag.Var(&TimeValue{tstart}, "start", "dump bookmarks from this date and after, RFC 3339 format with optional time and time zone, default to local time (2017-11-01[T00:00:00[-07:00]]) (Default is beginning of file)")
@@ -186,7 +211,7 @@ func main() {
 
 	var dump retrieveResponse
 	err = json.Unmarshal([]byte(input), &dump)
-	check(err)
+	checkJSON(err)
 
 	items := make(map[int64]PocketItem)
 	var keys []int64
